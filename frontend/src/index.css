@@ -1,0 +1,13 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+body {
+  margin: 0;
+  padding: 0;
+  background: #f3f4f6;
+  font-family: sans-serif;
+}
+* {
+  caret-color: transparent;
+}
