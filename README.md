@@ -98,8 +98,7 @@ http://localhost:3000
 
 ## Downloads
 
-Java JDK: https://adoptium.net  
-Maven: https://maven.apache.org
+Java , maven
 
 ## pom.xml Dependencies
 
