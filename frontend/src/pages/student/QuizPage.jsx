@@ -67,36 +67,35 @@ const QuizPage = () => {
     }
   };
 
-const startAttempt = async () => {
-  try {
-    const res = await api.post("/attempts/start", { quizId: id });
-    if (res.data.attemptId) {
-      setAttemptId(res.data.attemptId);
-      setSubmitError(""); // clear any old error
-    } else {
-      setSubmitError("Server did not return an attempt ID.");
+  const startAttempt = async () => {
+    try {
+      const res = await api.post("/attempts/start", { quizId: id });
+      if (res.data.attemptId) {
+        setAttemptId(res.data.attemptId);
+        setSubmitError("");
+      } else {
+        setSubmitError("Server did not return an attempt ID.");
+      }
+    } catch (err) {
+      const msg = err.response?.data?.message || err.message;
+      setSubmitError(`Start attempt failed: ${msg}`);
     }
-  } catch (err) {
-    const msg = err.response?.data?.message || err.message;
-    setSubmitError(`Start attempt failed: ${msg}`);
-  }
-};
+  };
 
-const enterFullscreen = async () => {
-  try {
-    await document.documentElement.requestFullscreen();
-    setIsFullscreen(true);
-  } catch (err) {
-    console.log(err);
-  }
-};
+  const enterFullscreen = async () => {
+    try {
+      await document.documentElement.requestFullscreen();
+      setIsFullscreen(true);
+    } catch (err) {
+      console.log(err);
+    }
+  };
 
-// Add a separate useEffect to start attempt when fullscreen is confirmed
-useEffect(() => {
-  if (isFullscreen && !attemptId) {
-    startAttempt();
-  }
-}, [isFullscreen]);
+  useEffect(() => {
+    if (isFullscreen && !attemptId) {
+      startAttempt();
+    }
+  }, [isFullscreen]);
 
   const submitQuiz = async () => {
     if (submitting) return;
@@ -112,6 +111,9 @@ useEffect(() => {
         autoSubmitted: false,
       });
       toast.success(`Quiz Submitted! Score: ${res.data.score}`);
+      if (document.fullscreenElement) {
+        await document.exitFullscreen();
+      }
       navigate("/result", { state: { ...res.data, quizId: id } });
     } catch (err) {
       setSubmitError(err.response?.data?.message || err.message || "Submission Failed");
